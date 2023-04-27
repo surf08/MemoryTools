@@ -17,14 +17,14 @@ DWORD FindPattern(const char *module, const char *pattern, const char *mask)
 	return 0;
 }
 
-bool VMTHook(void *instance, void **origin, void *target, uintptr_t offset)
+bool VMTHook(void *instance, void **oldfunc, void *newfunc, uintptr_t offset)
 {
 	uintptr_t vtable = *((uintptr_t *)instance) + sizeof(uintptr_t) * offset;
-	*origin = (void *)(*((uintptr_t *)vtable));
+	*oldfunc = (void *)(*((uintptr_t *)vtable));
 	DWORD oldProtect;
 	if (VirtualProtect((LPVOID)vtable, sizeof(vtable), PAGE_EXECUTE_READWRITE, &oldProtect))
 	{
-		*((uintptr_t *)vtable) = (uintptr_t)target;
+		*((uintptr_t *)vtable) = (uintptr_t)newfunc;
 		if (VirtualProtect((LPVOID)vtable, sizeof(vtable), oldProtect, &oldProtect))
 			return true;
 	}
