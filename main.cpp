@@ -1,3 +1,6 @@
+#include <Windows.h>
+#include <Psapi.h>
+
 DWORD FindPattern(const char *module, const char *pattern, const char *mask)
 {
 	MODULEINFO mInfo = { 0 };
